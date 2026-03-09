@@ -22,5 +22,61 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+.font-great-vibes {
+  font-family: var(--font-great-vibes), cursive;
+}
+
+.font-pinyon-script {
+  font-family: var(--font-pinyon-script), cursive;
+}
+
+@keyframes brand-sparkle {
+  0%,
+  100% {
+    text-shadow:
+      0 0 10px rgba(16, 185, 129, 0.18),
+      0 0 22px rgba(132, 204, 22, 0.24);
+  }
+
+  50% {
+    text-shadow:
+      0 0 16px rgba(52, 211, 153, 0.38),
+      0 0 34px rgba(163, 230, 53, 0.3),
+      0 0 48px rgba(45, 212, 191, 0.2);
+  }
+}
+
+@keyframes brand-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.brand-sparkle {
+  animation:
+    brand-sparkle 3.4s ease-in-out infinite,
+    brand-float 6s ease-in-out infinite;
+}
+
+.brand-sparkle--subtle {
+  animation: brand-sparkle 4.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .brand-sparkle,
+  .brand-sparkle--subtle {
+    animation: none;
+  }
 }
