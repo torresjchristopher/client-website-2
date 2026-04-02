@@ -1,35 +1,39 @@
-const LETTERS = "SweetPear".split("");
-const FONT_CLASSES = ["font-great-vibes", "font-pinyon-script"];
-const COLOR_CLASSES = ["text-emerald-600", "text-lime-500", "text-emerald-500", "text-teal-500"];
+const LETTERS = 'SweetPear'.split('');
+const FONT_CLASSES = ['font-great-vibes', 'font-pinyon-script'];
+
+type BrandWordmarkVariant = 'hero' | 'header' | 'footer';
 
 interface BrandWordmarkProps {
   className?: string;
   subtle?: boolean;
+  variant?: BrandWordmarkVariant;
 }
 
 export default function BrandWordmark({
-  className = "",
+  className = '',
   subtle = false,
+  variant = 'hero',
 }: BrandWordmarkProps) {
   return (
     <span
       aria-label="SweetPear"
       className={[
-        "inline-flex flex-wrap items-baseline gap-[0.02em] leading-none",
-        subtle ? "brand-sparkle--subtle" : "brand-sparkle",
+        'brand-wordmark',
+        `brand-wordmark--${variant}`,
+        subtle ? 'brand-wordmark--subtle' : '',
         className,
       ]
         .filter(Boolean)
-        .join(" ")}
+        .join(' ')}
     >
       {LETTERS.map((letter, index) => (
         <span
           key={`${letter}-${index}`}
           className={[
-            "inline-block",
+            'brand-wordmark__letter',
             FONT_CLASSES[index % FONT_CLASSES.length],
-            COLOR_CLASSES[index % COLOR_CLASSES.length],
-          ].join(" ")}
+            `brand-wordmark__letter--${index % 4}`,
+          ].join(' ')}
         >
           {letter}
         </span>

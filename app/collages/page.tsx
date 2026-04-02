@@ -23,6 +23,10 @@ export default function CollagesPage() {
   const [cartItemCount, setCartItemCount] = useState(0);
 
   useEffect(() => {
+    if (!database) {
+      return;
+    }
+
     const artworksRef = ref(database, 'collages');
     return onValue(
       artworksRef,

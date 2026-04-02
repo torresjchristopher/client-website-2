@@ -17,6 +17,7 @@ const MENU_ITEMS = [
   { href: '/collages', label: 'Collages' },
   { href: '/documentaries', label: 'Documentaries' },
   { href: '/handmade', label: 'Handmade Art' },
+  { href: '/client', label: 'Client' },
 ];
 
 export default function Navbar({
@@ -46,8 +47,8 @@ export default function Navbar({
     ? 'border-white/10 bg-black/35 text-white backdrop-blur-xl'
     : 'border-stone-200/70 bg-white/88 text-stone-800 backdrop-blur-xl';
   const mutedTextClass = isDark
-    ? 'text-white/70 hover:text-emerald-300'
-    : 'text-stone-500 hover:text-emerald-600';
+    ? 'text-white/70 hover:text-rose-200'
+    : 'text-stone-500 hover:text-red-600';
 
   return (
     <nav className={`fixed inset-x-0 top-0 z-50 border-b ${shellClass}`}>
@@ -58,7 +59,7 @@ export default function Navbar({
           >
             SweetPear
           </span>
-          <BrandWordmark className="text-[1.9rem] sm:text-[2.3rem]" subtle />
+          <BrandWordmark className="text-[1.9rem] sm:text-[2.3rem]" subtle variant="header" />
         </Link>
 
         <div className="order-3 flex w-full flex-wrap items-center gap-x-5 gap-y-2 text-[0.68rem] uppercase tracking-[0.3em] sm:order-2 sm:w-auto sm:flex-1 sm:justify-center sm:gap-x-6 lg:gap-x-8">
@@ -77,7 +78,7 @@ export default function Navbar({
           <ShoppingCart size={18} />
           <span className="sr-only">Checkout</span>
           {displayCount > 0 && (
-            <span className="absolute -right-1 -top-1 inline-flex min-w-5 justify-center rounded-full bg-emerald-600 px-1.5 py-0.5 text-[0.62rem] font-semibold tracking-normal text-white">
+            <span className="absolute -right-1 -top-1 inline-flex min-w-5 justify-center rounded-full bg-red-600 px-1.5 py-0.5 text-[0.62rem] font-semibold tracking-normal text-white">
               {displayCount}
             </span>
           )}

@@ -9,8 +9,8 @@ export default function Footer({ isDark = false }: FooterProps) {
     ? 'border-white/15 bg-transparent text-white'
     : 'border-stone-200 bg-transparent text-stone-800';
   const mutedClass = isDark
-    ? 'text-white/70 hover:text-emerald-300'
-    : 'text-stone-500 hover:text-emerald-700';
+    ? 'text-white/70 hover:text-rose-200'
+    : 'text-stone-500 hover:text-red-700';
 
   return (
     <footer className={`mt-20 border-t ${containerClass}`}>
@@ -20,7 +20,7 @@ export default function Footer({ isDark = false }: FooterProps) {
             <span className={`text-[0.65rem] uppercase tracking-[0.4em] ${isDark ? 'text-white/55' : 'text-stone-500'}`}>
               SweetPear
             </span>
-            <BrandWordmark className="text-3xl" subtle />
+            <BrandWordmark className="text-3xl" subtle variant="footer" />
           </div>
 
           <div className="flex items-center gap-6 text-[0.7rem] uppercase tracking-[0.32em]">
@@ -33,7 +33,7 @@ export default function Footer({ isDark = false }: FooterProps) {
               TikTok
             </a>
             <a
-              href="mailto:contact@sweetpear.com"
+              href="mailto:contact@sweetpear.org"
               className={mutedClass}
             >
               Email

@@ -26,6 +26,10 @@ export default function DocumentariesPage() {
   const [cartItemCount, setCartItemCount] = useState(0);
 
   useEffect(() => {
+    if (!database) {
+      return;
+    }
+
     const documentariesRef = ref(database, 'documentaries');
     return onValue(
       documentariesRef,
@@ -83,10 +87,10 @@ export default function DocumentariesPage() {
                 Visit YouTube
               </a>
               <Link
-                href="/upload"
+                href="/client"
                 className="rounded-full border border-white/20 px-5 py-3 text-center text-[0.72rem] uppercase tracking-[0.28em] text-white transition hover:border-white/40 hover:bg-white/10"
               >
-                Upload Documentary Entry
+                Open Client Upload
               </Link>
             </div>
           </div>

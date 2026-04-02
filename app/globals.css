@@ -33,23 +33,57 @@ body {
   font-family: var(--font-pinyon-script), cursive;
 }
 
-@keyframes brand-sparkle {
+.brand-wordmark {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.02em;
+  line-height: 1;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  will-change: transform, filter;
+}
+
+.brand-wordmark__letter {
+  display: inline-block;
+  text-shadow:
+    0 0 10px rgba(248, 113, 113, 0.28),
+    0 0 24px rgba(225, 29, 72, 0.16);
+}
+
+.brand-wordmark__letter--0 {
+  color: #fb7185;
+}
+
+.brand-wordmark__letter--1 {
+  color: #ef4444;
+}
+
+.brand-wordmark__letter--2 {
+  color: #dc2626;
+}
+
+.brand-wordmark__letter--3 {
+  color: #f43f5e;
+}
+
+@keyframes brand-red-glitter {
   0%,
   100% {
-    text-shadow:
-      0 0 10px rgba(16, 185, 129, 0.18),
-      0 0 22px rgba(132, 204, 22, 0.24);
+    filter:
+      drop-shadow(0 0 6px rgba(248, 113, 113, 0.24))
+      drop-shadow(0 0 16px rgba(225, 29, 72, 0.16));
   }
 
   50% {
-    text-shadow:
-      0 0 16px rgba(52, 211, 153, 0.38),
-      0 0 34px rgba(163, 230, 53, 0.3),
-      0 0 48px rgba(45, 212, 191, 0.2);
+    filter:
+      drop-shadow(0 0 10px rgba(252, 165, 165, 0.42))
+      drop-shadow(0 0 26px rgba(225, 29, 72, 0.28))
+      drop-shadow(0 0 40px rgba(190, 24, 93, 0.18));
   }
 }
 
-@keyframes brand-float {
+@keyframes brand-hero-float {
   0%,
   100% {
     transform: translateY(0);
@@ -60,14 +94,35 @@ body {
   }
 }
 
-.brand-sparkle {
-  animation:
-    brand-sparkle 3.4s ease-in-out infinite,
-    brand-float 6s ease-in-out infinite;
+@keyframes brand-header-rotate {
+  0%,
+  100% {
+    transform: perspective(960px) rotateY(-14deg) rotateX(3deg);
+  }
+
+  50% {
+    transform: perspective(960px) rotateY(14deg) rotateX(-3deg);
+  }
 }
 
-.brand-sparkle--subtle {
-  animation: brand-sparkle 4.6s ease-in-out infinite;
+.brand-wordmark--hero {
+  animation:
+    brand-red-glitter 3.4s ease-in-out infinite,
+    brand-hero-float 6.8s ease-in-out infinite;
+}
+
+.brand-wordmark--header {
+  animation:
+    brand-red-glitter 3.1s ease-in-out infinite,
+    brand-header-rotate 7.8s ease-in-out infinite;
+}
+
+.brand-wordmark--footer {
+  animation: brand-red-glitter 4.8s ease-in-out infinite;
+}
+
+.brand-wordmark--subtle {
+  opacity: 0.96;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -75,8 +130,9 @@ body {
     scroll-behavior: auto;
   }
 
-  .brand-sparkle,
-  .brand-sparkle--subtle {
+  .brand-wordmark--hero,
+  .brand-wordmark--header,
+  .brand-wordmark--footer {
     animation: none;
   }
 }

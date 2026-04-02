@@ -6,11 +6,19 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { ref as dbRef, push } from 'firebase/database';
 import { database, storage } from '@/lib/firebase';
 
-export default function UploadForm() {
+type UploadCategory = 'artworks' | 'collages' | 'documentaries';
+type UploadFormMode = 'full' | 'art-only';
+
+interface UploadFormProps {
+  mode?: UploadFormMode;
+}
+
+export default function UploadForm({ mode = 'full' }: UploadFormProps) {
+  const isArtOnly = mode === 'art-only';
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [category, setCategory] = useState('artworks');
+  const [category, setCategory] = useState<UploadCategory>('artworks');
   const [videoUrl, setVideoUrl] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +26,12 @@ export default function UploadForm() {
   const [success, setSuccess] = useState('');
 
   const isForSale = category !== 'documentaries';
+  const eyebrow = isArtOnly ? 'Client upload' : 'Upload';
+  const heading = isArtOnly ? 'Add artwork to the SweetPear gallery' : 'Add new SweetPear content';
+  const descriptionText = isArtOnly
+    ? 'Upload an image, title, price, and description. Published pieces appear on the homepage gallery and the handmade shop automatically.'
+    : 'Upload artwork, collages, or documentary stills with a clear description. Documentary uploads can also store a video link.';
+  const submitLabel = isArtOnly ? 'Add artwork to gallery' : 'Publish Entry';
 
   useEffect(() => {
     if (!isForSale) {
@@ -35,6 +49,11 @@ export default function UploadForm() {
     event.preventDefault();
     setError('');
     setSuccess('');
+
+    if (!storage || !database) {
+      setError('Upload is not configured yet. Add the Firebase environment variables first.');
+      return;
+    }
 
     if (!title || !description || !image) {
       setError('Please add a title, description, and image.');
@@ -69,7 +88,11 @@ export default function UploadForm() {
         ...(videoUrl.trim() ? { videoUrl: videoUrl.trim() } : {}),
       });
 
-      setSuccess('Your entry was uploaded successfully.');
+      setSuccess(
+        isArtOnly
+          ? 'Your artwork was published to the SweetPear gallery.'
+          : 'Your entry was uploaded successfully.',
+      );
       setTitle('');
       setDescription('');
       setPrice('');
@@ -86,11 +109,9 @@ export default function UploadForm() {
   return (
     <div className="w-full max-w-2xl rounded-[2rem] border border-red-100 bg-white p-8 shadow-sm sm:p-10">
       <div className="mb-8 space-y-3">
-        <p className="text-[0.68rem] uppercase tracking-[0.35em] text-red-600">Upload</p>
-        <h2 className="text-3xl font-light tracking-tight text-stone-900">Add new SweetPear content</h2>
-        <p className="text-sm leading-relaxed text-stone-600">
-          Upload artwork, collages, or documentary stills with a clear description. Documentary uploads can also store a video link.
-        </p>
+        <p className="text-[0.68rem] uppercase tracking-[0.35em] text-red-600">{eyebrow}</p>
+        <h2 className="text-3xl font-light tracking-tight text-stone-900">{heading}</h2>
+        <p className="text-sm leading-relaxed text-stone-600">{descriptionText}</p>
       </div>
 
       {error && (
@@ -119,51 +140,74 @@ export default function UploadForm() {
           </span>
         </label>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        {isArtOnly ? (
+          <div className="rounded-[1.5rem] border border-red-100 bg-red-50/40 px-5 py-4 text-sm leading-relaxed text-stone-600">
+            Every upload from this client tab is saved as a purchasable handmade artwork and added
+            to the main storefront gallery.
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-2">
+              <label className="text-[0.68rem] uppercase tracking-[0.32em] text-stone-500">
+                Category
+              </label>
+              <select
+                value={category}
+                onChange={(event) => setCategory(event.target.value as UploadCategory)}
+                className="w-full rounded-full border border-red-100 px-4 py-3 text-sm text-stone-700 outline-none transition focus:border-red-300"
+              >
+                <option value="artworks">Handmade Art</option>
+                <option value="collages">Conceptual Collages</option>
+                <option value="documentaries">Documentaries / Vlogs</option>
+              </select>
+            </div>
+
+            {isForSale ? (
+              <div className="space-y-2">
+                <label className="text-[0.68rem] uppercase tracking-[0.32em] text-stone-500">
+                  Price
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="Price in USD"
+                  value={price}
+                  onChange={(event) => setPrice(event.target.value)}
+                  className="w-full rounded-full border border-red-100 px-4 py-3 text-sm text-stone-700 outline-none transition focus:border-red-300"
+                />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <label className="text-[0.68rem] uppercase tracking-[0.32em] text-stone-500">
+                  Video Link
+                </label>
+                <input
+                  type="url"
+                  placeholder="YouTube or video URL"
+                  value={videoUrl}
+                  onChange={(event) => setVideoUrl(event.target.value)}
+                  className="w-full rounded-full border border-red-100 px-4 py-3 text-sm text-stone-700 outline-none transition focus:border-red-300"
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        {isArtOnly ? (
           <div className="space-y-2">
             <label className="text-[0.68rem] uppercase tracking-[0.32em] text-stone-500">
-              Category
+              Price
             </label>
-            <select
-              value={category}
-              onChange={(event) => setCategory(event.target.value)}
+            <input
+              type="number"
+              step="0.01"
+              placeholder="Price in USD"
+              value={price}
+              onChange={(event) => setPrice(event.target.value)}
               className="w-full rounded-full border border-red-100 px-4 py-3 text-sm text-stone-700 outline-none transition focus:border-red-300"
-            >
-              <option value="artworks">Handmade Art</option>
-              <option value="collages">Conceptual Collages</option>
-              <option value="documentaries">Documentaries / Vlogs</option>
-            </select>
+            />
           </div>
-
-          {isForSale ? (
-            <div className="space-y-2">
-              <label className="text-[0.68rem] uppercase tracking-[0.32em] text-stone-500">
-                Price
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                placeholder="Price in USD"
-                value={price}
-                onChange={(event) => setPrice(event.target.value)}
-                className="w-full rounded-full border border-red-100 px-4 py-3 text-sm text-stone-700 outline-none transition focus:border-red-300"
-              />
-            </div>
-          ) : (
-            <div className="space-y-2">
-              <label className="text-[0.68rem] uppercase tracking-[0.32em] text-stone-500">
-                Video Link
-              </label>
-              <input
-                type="url"
-                placeholder="YouTube or video URL"
-                value={videoUrl}
-                onChange={(event) => setVideoUrl(event.target.value)}
-                className="w-full rounded-full border border-red-100 px-4 py-3 text-sm text-stone-700 outline-none transition focus:border-red-300"
-              />
-            </div>
-          )}
-        </div>
+        ) : null}
 
         <div className="space-y-2">
           <label className="text-[0.68rem] uppercase tracking-[0.32em] text-stone-500">
@@ -207,7 +251,7 @@ export default function UploadForm() {
           disabled={isLoading}
           className="inline-flex rounded-full bg-red-600 px-6 py-3 text-[0.72rem] uppercase tracking-[0.3em] text-white transition hover:bg-red-500 disabled:cursor-not-allowed disabled:bg-red-300"
         >
-          {isLoading ? 'Uploading...' : 'Publish Entry'}
+          {isLoading ? 'Uploading...' : submitLabel}
         </button>
       </form>
     </div>

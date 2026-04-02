@@ -101,6 +101,10 @@ export default function Home() {
   const [cartItemCount, setCartItemCount] = useState(0);
 
   useEffect(() => {
+    if (!database) {
+      return;
+    }
+
     const handmadeRef = ref(database, 'artworks');
     const collagesRef = ref(database, 'collages');
 
@@ -197,7 +201,10 @@ export default function Home() {
               <p className="text-[0.7rem] uppercase tracking-[0.38em] text-emerald-200">
                 SweetPear storefront
               </p>
-              <BrandWordmark className="mt-6 text-[3.4rem] sm:text-[4.6rem] lg:text-[5.8rem]" />
+              <BrandWordmark
+                className="mt-6 text-[3.4rem] sm:text-[4.6rem] lg:text-[5.8rem]"
+                variant="hero"
+              />
               <h1 className="mt-8 max-w-4xl text-4xl font-light tracking-tight text-white sm:text-5xl lg:text-6xl">
                 A cleaner landing page, built like a gallery for work that is ready to collect.
               </h1>
@@ -220,6 +227,12 @@ export default function Home() {
                 >
                   Add featured piece
                 </button>
+                <Link
+                  href="/client"
+                  className="rounded-full border border-white/20 px-6 py-3 text-[0.72rem] uppercase tracking-[0.3em] text-white transition hover:border-red-300 hover:bg-white/10 hover:text-red-100"
+                >
+                  Client upload
+                </Link>
               </div>
 
               <div className="mt-12 grid max-w-2xl gap-4 sm:grid-cols-3">

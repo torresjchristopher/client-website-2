@@ -23,6 +23,10 @@ export default function HandmadePage() {
   const [cartItemCount, setCartItemCount] = useState(0);
 
   useEffect(() => {
+    if (!database) {
+      return;
+    }
+
     const artworksRef = ref(database, 'artworks');
     return onValue(
       artworksRef,
