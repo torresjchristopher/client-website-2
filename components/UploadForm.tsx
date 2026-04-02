@@ -2,9 +2,27 @@
 
 import { useEffect, useState } from 'react';
 import { Upload } from 'lucide-react';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { ref as dbRef, push } from 'firebase/database';
-import { database, storage } from '@/lib/firebase';
+import { database } from '@/lib/firebase';
+
+const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+async function uploadToCloudinary(file: File): Promise<string> {
+  if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+    throw new Error('Cloudinary is not configured. Add NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME and NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET to your environment variables.');
+  }
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+    { method: 'POST', body: formData },
+  );
+  if (!res.ok) throw new Error('Image upload failed.');
+  const data = await res.json();
+  return data.secure_url as string;
+}
 
 type UploadCategory = 'artworks' | 'collages' | 'documentaries';
 type UploadFormMode = 'full' | 'art-only';
@@ -50,7 +68,7 @@ export default function UploadForm({ mode = 'full' }: UploadFormProps) {
     setError('');
     setSuccess('');
 
-    if (!storage || !database) {
+    if (!database) {
       setError('Upload is not configured yet. Add the Firebase environment variables first.');
       return;
     }
@@ -73,9 +91,7 @@ export default function UploadForm({ mode = 'full' }: UploadFormProps) {
     setIsLoading(true);
 
     try {
-      const imageRef = ref(storage, `${category}/${Date.now()}-${image.name}`);
-      const snapshot = await uploadBytes(imageRef, image);
-      const imageUrl = await getDownloadURL(snapshot.ref);
+      const imageUrl = await uploadToCloudinary(image);
 
       const entryRef = dbRef(database, category);
       await push(entryRef, {
