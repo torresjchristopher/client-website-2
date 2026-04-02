@@ -13,10 +13,6 @@ interface NavbarProps {
 }
 
 const MENU_ITEMS = [
-  { href: '/blog', label: 'Writing' },
-  { href: '/collages', label: 'Collages' },
-  { href: '/documentaries', label: 'Documentaries' },
-  { href: '/handmade', label: 'Handmade Art' },
   { href: '/client', label: 'Client' },
 ];
 
